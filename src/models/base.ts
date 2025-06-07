@@ -1,0 +1,1 @@
+//tipos e interfaces aqui

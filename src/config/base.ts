@@ -1,0 +1,1 @@
+//configs num geral, .env, banco, etc.

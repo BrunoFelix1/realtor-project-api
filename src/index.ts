@@ -1,6 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 
+// esse arquivo é o nosso ola mundo
+// por enquanto é só um hello world
+// depois vamos adicionar as rotas e a lógica do projeto num geral
 const app = express();
 const PORT = process.env.PORT || 3000;
 
