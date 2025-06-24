@@ -1,4 +1,3 @@
-
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import Client from './Client';
 
@@ -17,10 +16,17 @@ export default class Property {
     address: string;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
-    price: number;
-
-    @Column({ type: 'boolean', default: true })
+    price: number;    @Column({ type: 'boolean', default: true })
     available: boolean;
+
+    @Column({ type: 'text', nullable: true })
+    photoBase64?: string;
+
+    @Column({ type: 'varchar', length: 100, nullable: true })
+    photoMimeType?: string;
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    photoFileName?: string;
 
     @Column({ name: 'landlord_id' })
     landlordId: number;
@@ -39,7 +45,10 @@ export default class Property {
         address: string,
         price: number,
         available: boolean,
-        landlordId: number
+        landlordId: number,
+        photoBase64?: string,
+        photoMimeType?: string,
+        photoFileName?: string
     ) {
         this.title = title;
         this.description = description;
@@ -47,6 +56,9 @@ export default class Property {
         this.price = price;
         this.available = available;
         this.landlordId = landlordId;
+        this.photoBase64 = photoBase64;
+        this.photoMimeType = photoMimeType;
+        this.photoFileName = photoFileName;
     }
 
 }
