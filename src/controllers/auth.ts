@@ -14,7 +14,7 @@ export const register = async (req: Request, res: Response) => {
         if (existingUser) {
             return res.status(400).json({ message: 'Usuário já existe com este email' });
         }
-        const user = await UserRepository.create(name, email, password, role || 'user');
+        const user = await UserRepository.create(name, email, password, role || 'corretor');
 
         // Verificar se JWT_SECRET existe
         if (!process.env.JWT_SECRET) {

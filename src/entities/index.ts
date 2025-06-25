@@ -1,6 +1,6 @@
 export { default as Client } from './Client';
 export { default as Property } from './Property';
-export { default as User } from './user';
+export { default as User } from './User';
 export { default as Visit } from './Visit';
 export { default as Rental } from './Rental';
 export { default as RentInvoice } from './RentInvoice';

@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert } from 'typeorm';
 import bcrypt from 'bcryptjs';
+import { UserRole } from '../types/auth';
 
 @Entity('users')
 export default class User {
@@ -16,7 +17,7 @@ export default class User {
     password: string;
 
     @Column({ type: 'varchar', length: 50 })
-    role: string;
+    role: UserRole;
 
     @CreateDateColumn()
     createdAt!: Date;
@@ -24,7 +25,7 @@ export default class User {
     @UpdateDateColumn()
     updatedAt!: Date;
 
-    constructor(name: string, email: string, password: string, role: string) {
+    constructor(name: string, email: string, password: string, role: UserRole) {
         this.name = name;
         this.email = email;
         this.password = password;

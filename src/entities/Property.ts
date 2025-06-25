@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import Client from './Client';
+import User from './User';
 
 @Entity('properties')
 export default class Property {
@@ -31,9 +32,16 @@ export default class Property {
     @Column({ name: 'landlord_id' })
     landlordId: number;
 
+    @Column({ name: 'created_by_user_id' })
+    createdByUserId: number;
+
     @ManyToOne(() => Client, { eager: false })
     @JoinColumn({ name: 'landlord_id' })
     landlord!: Client;
+
+    @ManyToOne(() => User, { eager: false })
+    @JoinColumn({ name: 'created_by_user_id' })
+    createdByUser!: User;
 
     @CreateDateColumn()
     createdAt!: Date;
@@ -46,6 +54,7 @@ export default class Property {
         price: number,
         available: boolean,
         landlordId: number,
+        createdByUserId: number,
         photoBase64?: string,
         photoMimeType?: string,
         photoFileName?: string
@@ -56,6 +65,7 @@ export default class Property {
         this.price = price;
         this.available = available;
         this.landlordId = landlordId;
+        this.createdByUserId = createdByUserId;
         this.photoBase64 = photoBase64;
         this.photoMimeType = photoMimeType;
         this.photoFileName = photoFileName;

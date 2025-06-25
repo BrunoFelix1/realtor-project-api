@@ -1,6 +1,7 @@
 import { AppDataSource } from '../config/data-source';
 import User from '../entities/User';
 import { Repository } from 'typeorm';
+import { UserRole } from '../types/auth';
 
 class UserRepository {
     private repository: Repository<User>;
@@ -17,7 +18,7 @@ class UserRepository {
         return await this.repository.findOne({ where: { id } });
     }
 
-    async create(name: string, email: string, password: string, role: string = 'user'): Promise<User> {
+    async create(name: string, email: string, password: string, role: UserRole = 'corretor'): Promise<User> {
         const user = new User(name, email, password, role);
         return await this.repository.save(user);
     }
