@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert } from 'typeorm';
+import bcrypt from 'bcryptjs';
 
 @Entity('users')
 export default class User {
@@ -21,10 +22,21 @@ export default class User {
     createdAt!: Date;
 
     @UpdateDateColumn()
-    updatedAt!: Date;    constructor(name: string, email: string, password: string, role: string) {
+    updatedAt!: Date;
+
+    constructor(name: string, email: string, password: string, role: string) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    @BeforeInsert()
+    async hashPassword() {
+        this.password = await bcrypt.hash(this.password, 10);
+    }
+
+    async comparePassword(password: string): Promise<boolean> {
+        return bcrypt.compare(password, this.password);
     }
 }

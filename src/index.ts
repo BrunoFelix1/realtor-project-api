@@ -1,9 +1,8 @@
 import express from 'express';
 import cors from 'cors';
+import { AppDataSource } from './config/data-source';
+import authRoutes from './routes/auth';
 
-// esse arquivo é o nosso ola mundo
-// por enquanto é só um hello world
-// depois vamos adicionar as rotas e a lógica do projeto num geral
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -11,18 +10,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-  res.json({ message: 'salve, projeto imobiliario' });
-});
 
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Algo deu errado!' });
-});
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+app.use('/api/auth', authRoutes);
 
-// Para desenvolvimento: npm run dev (executa diretamente o TypeScript)
-// Para produção: npm run build && npm start (compila e executa o JavaScript)
+AppDataSource.initialize()
+  .then(() => {
+    console.log('Banco de dados conectado com sucesso!');
+    app.listen(PORT, () => {
+      console.log(`Servidor rodando na porta ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Erro ao conectar com o banco de dados:', error);
+  });
+
+

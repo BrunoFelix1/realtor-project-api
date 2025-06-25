@@ -3,6 +3,11 @@ import * as dotenv from 'dotenv';
 import User from '../entities/User';
 import Client from '../entities/Client';
 import Property from '../entities/Property';
+import Visit from '../entities/Visit';
+import Rental from '../entities/Rental';
+import RentInvoice from '../entities/RentInvoice';
+import Receipt from '../entities/Receipt';
+import ClientHistory from '../entities/ClientHistory';
 
 dotenv.config();
 
@@ -13,7 +18,7 @@ export const AppDataSource = new DataSource({
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    entities: [User, Client, Property],
+    entities: [User, Client, Property, Visit, Rental, RentInvoice, Receipt, ClientHistory],
     synchronize: true,
     logging: false
 });
