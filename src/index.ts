@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { AppDataSource } from './config/data-source';
-import authRoutes from './routes/auth';
+import authRoutes from './routes/Auth';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
