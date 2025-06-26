@@ -14,8 +14,10 @@ class UserRepository {
         return await this.repository.findOne({ where: { email } });
     }
 
-    async findByName(name: string): Promise<User | null> {
-        return await this.repository.findOne({ where: { name } });
+    async findByName(name: string): Promise<User[]> {
+        return await this.repository.createQueryBuilder('user')
+            .where('user.name LIKE :name', { name: `%${name}%` })
+            .getMany();
     }
 
     async findById(id: number): Promise<User | null> {

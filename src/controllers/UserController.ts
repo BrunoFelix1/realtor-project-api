@@ -56,11 +56,10 @@ class UserController {
     async findByName(req: Request, res: Response) {
         try {
             const { name } = req.params;
-            const user = await UserService.findByName(name);
-            if (!user) return res.status(404).json({ message: 'Usuário não encontrado' });
-            return res.status(200).json(user);
+            const users = await UserService.findByName(name);
+            return res.status(200).json(users);
         } catch (error: any) {
-            return res.status(500).json({ message: 'Erro ao buscar usuário por nome' });
+            return res.status(500).json({ message: 'Erro ao buscar usuários por nome' });
         }
     }
 }

@@ -118,14 +118,13 @@ class UserService {
     }
 
     async findByName(name: string) {
-        const user = await UserRepository.findByName(name);
-        if (!user) return null;
-        return {
+        const users = await UserRepository.findByName(name);
+        return users.map(user => ({
             id: user.id,
             name: user.name,
             email: user.email,
             role: user.role
-        };
+        }));
     }
 }
 
