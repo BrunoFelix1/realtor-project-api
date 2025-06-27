@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import Property from './Property';
 import Client from './Client';
+import User from './User';
 
 @Entity('rentals')
 export default class Rental {
@@ -25,6 +26,9 @@ export default class Rental {
     @Column({ type: 'boolean', default: true })
     active: boolean;
 
+    @Column({ name: 'created_by_user_id' })
+    createdByUserId: number;
+
     @ManyToOne(() => Property, { eager: false })
     @JoinColumn({ name: 'property_id' })
     property!: Property;
@@ -32,6 +36,10 @@ export default class Rental {
     @ManyToOne(() => Client, { eager: false })
     @JoinColumn({ name: 'tenant_id' })
     tenant!: Client;
+
+    @ManyToOne(() => User, { eager: false })
+    @JoinColumn({ name: 'created_by_user_id' })
+    createdByUser!: User;
 
     @CreateDateColumn()
     createdAt!: Date;
@@ -45,6 +53,7 @@ export default class Rental {
         startDate: Date,
         endDate: Date,
         monthlyValue: number,
+        createdByUserId: number,
         active: boolean = true
     ) {
         this.propertyId = propertyId;
@@ -52,6 +61,7 @@ export default class Rental {
         this.startDate = startDate;
         this.endDate = endDate;
         this.monthlyValue = monthlyValue;
+        this.createdByUserId = createdByUserId;
         this.active = active;
     }
 }

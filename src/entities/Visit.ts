@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import Property from './Property';
 import Client from './Client';
+import User from './User';
 
 @Entity('visits')
 export default class Visit {
@@ -22,6 +23,9 @@ export default class Visit {
     @Column({ type: 'text', nullable: true })
     notes?: string;
 
+    @Column({ name: 'created_by_user_id' })
+    createdByUserId: number;
+
     @ManyToOne(() => Property, { eager: false })
     @JoinColumn({ name: 'property_id' })
     property!: Property;
@@ -29,6 +33,10 @@ export default class Visit {
     @ManyToOne(() => Client, { eager: false })
     @JoinColumn({ name: 'client_id' })
     client!: Client;
+
+    @ManyToOne(() => User, { eager: false })
+    @JoinColumn({ name: 'created_by_user_id' })
+    createdByUser!: User;
 
     @CreateDateColumn()
     createdAt!: Date;
@@ -40,12 +48,14 @@ export default class Visit {
         propertyId: number,
         clientId: number,
         scheduledAt: Date,
+        createdByUserId: number,
         status: 'agendada' | 'realizada' | 'cancelada' = 'agendada',
         notes?: string
     ) {
         this.propertyId = propertyId;
         this.clientId = clientId;
         this.scheduledAt = scheduledAt;
+        this.createdByUserId = createdByUserId;
         this.status = status;
         this.notes = notes;
     }

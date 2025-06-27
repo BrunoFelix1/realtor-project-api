@@ -1,6 +1,7 @@
 import { AppDataSource } from '../config/data-source';
 import User from '../entities/User';
 import { Repository } from 'typeorm';
+import { UserRole } from '../types/auth';
 
 class UserRepository {
     private repository: Repository<User>;
@@ -13,11 +14,17 @@ class UserRepository {
         return await this.repository.findOne({ where: { email } });
     }
 
+    async findByName(name: string): Promise<User[]> {
+        return await this.repository.createQueryBuilder('user')
+            .where('user.name LIKE :name', { name: `%${name}%` })
+            .getMany();
+    }
+
     async findById(id: number): Promise<User | null> {
         return await this.repository.findOne({ where: { id } });
     }
 
-    async create(name: string, email: string, password: string, role: string = 'user'): Promise<User> {
+    async create(name: string, email: string, password: string, role: UserRole = 'corretor'): Promise<User> {
         const user = new User(name, email, password, role);
         return await this.repository.save(user);
     }
