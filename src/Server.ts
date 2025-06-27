@@ -8,6 +8,7 @@ import propertyRoutes from './routes/Property';
 import visitRoutes from './routes/Visit';
 import clientHistoryRoutes from './routes/ClientHistory';
 import rentalRoutes from './routes/Rental';
+import receiptRoutes from './routes/Receipt';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +27,7 @@ app.use('/api/properties', propertyRoutes);
 app.use('/api/visits', visitRoutes);
 app.use('/api/client-history', clientHistoryRoutes);
 app.use('/api/rentals', rentalRoutes);
+app.use('/api/receipts', receiptRoutes);
 
 
 
