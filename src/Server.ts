@@ -9,6 +9,7 @@ import visitRoutes from './routes/Visit';
 import clientHistoryRoutes from './routes/ClientHistory';
 import rentalRoutes from './routes/Rental';
 import receiptRoutes from './routes/Receipt';
+import rentInvoiceRoutes from './routes/RentInvoice';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +29,7 @@ app.use('/api/visits', visitRoutes);
 app.use('/api/client-history', clientHistoryRoutes);
 app.use('/api/rentals', rentalRoutes);
 app.use('/api/receipts', receiptRoutes);
+app.use('/api/rent-invoices', rentInvoiceRoutes);
 
 
 
