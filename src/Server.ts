@@ -6,6 +6,7 @@ import userRoutes from './routes/User';
 import clientRoutes from './routes/Client';
 import propertyRoutes from './routes/Property';
 import visitRoutes from './routes/Visit';
+import clientHistoryRoutes from './routes/ClientHistory';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,6 +23,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/properties', propertyRoutes);
 app.use('/api/visits', visitRoutes);
+app.use('/api/client-history', clientHistoryRoutes);
 
 
 
