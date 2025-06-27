@@ -1,0 +1,7 @@
+Sistema de aluguel de casa:
+- CRUD de casa
+- Controle de cobrança de aluguel
+- CRUD de clientes
+- Agendamento de Visitas (CRUD de Visitas)
+- Emissão de Recibos (Imposto, comissão etc.)
+- Histórico de Cliente
