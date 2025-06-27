@@ -3,6 +3,7 @@ import cors from 'cors';
 import { AppDataSource } from './config/data-source';
 import authRoutes from './routes/Auth';
 import userRoutes from './routes/User';
+import clientRoutes from './routes/Client';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 // definição das rotas-base da nossa api
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/clients', clientRoutes)
 
 
 
