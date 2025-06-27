@@ -1,7 +1,10 @@
 import { Router } from 'express';
 import UserController from '../controllers/UserController';
+import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
+
+router.use(authenticateToken);
 
 // Listar usuários
 router.get('/', UserController.list);
