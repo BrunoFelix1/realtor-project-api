@@ -4,7 +4,23 @@ import Visit from '../entities/Visit';
 class VisitService {
     async list() {
         const visits = await VisitRepository.findAll();
-        return visits.map(visit => this.format(visit));
+        const visitsWithClient = await Promise.all(
+            visits.map(async (visit) => {
+                if (!visit.client && visit.clientId) {
+                    const { default: ClientRepository } = await import('../repositories/ClientRepository');
+                    const client = await ClientRepository.findById(visit.clientId);
+                    return { ...visit, client };
+                }
+                return visit;
+            })
+        );
+        return visitsWithClient.map(visit => {
+            if (visit.client === null) {
+                const { client, ...rest } = visit;
+                return this.format(rest as Visit);
+            }
+            return this.format(visit as Visit);
+        });
     }
 
     async findById(id: number) {
@@ -66,11 +82,12 @@ class VisitService {
         return { message: 'Visita deletada com sucesso' };
     }
 
-    private format(visit: Visit) {
+    private format(visit: Visit & { client?: any }) {
         return {
             id: visit.id,
             propertyId: visit.propertyId,
             clientId: visit.clientId,
+            client: visit.client ?? undefined,
             scheduledAt: visit.scheduledAt,
             status: visit.status,
             notes: visit.notes,

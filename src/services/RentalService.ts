@@ -4,7 +4,29 @@ import Rental from '../entities/Rental';
 class RentalService {
     async list() {
         const rentals = await RentalRepository.findAll();
-        return rentals.map(rental => this.format(rental));
+        // Busca o inquilino e o imóvel relacionados para cada aluguel
+        const rentalsWithRelations = await Promise.all(
+            rentals.map(async (rental) => {
+                let tenantObj: any = undefined;
+                let propertyObj: any = undefined;
+                if (rental.tenantId) {
+                    const { default: ClientRepository } = await import('../repositories/ClientRepository');
+                    tenantObj = await ClientRepository.findById(rental.tenantId) || undefined;
+                }
+                if (rental.propertyId) {
+                    const { default: PropertyRepository } = await import('../repositories/PropertyRepository');
+                    propertyObj = await PropertyRepository.findById(rental.propertyId) || undefined;
+                }
+                return { ...rental, tenant: tenantObj, property: propertyObj };
+            })
+        );
+        return rentalsWithRelations.map(rental => {
+            if (rental.tenant === null || rental.property === null) {
+                const { tenant, property, ...rest } = rental;
+                return this.format(rest as Rental);
+            }
+            return this.format(rental as Rental);
+        });
     }
 
     async findById(id: number) {
@@ -68,11 +90,13 @@ class RentalService {
         return { message: 'Aluguel deletado com sucesso' };
     }
 
-    private format(rental: Rental) {
+    private format(rental: Rental & { tenant?: any; property?: any }) {
         return {
             id: rental.id,
             propertyId: rental.propertyId,
+            property: rental.property ?? undefined,
             tenantId: rental.tenantId,
+            tenant: rental.tenant ?? undefined,
             startDate: rental.startDate,
             endDate: rental.endDate,
             monthlyValue: rental.monthlyValue,
