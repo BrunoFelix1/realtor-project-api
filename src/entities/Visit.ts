@@ -28,11 +28,11 @@ export default class Visit {
 
     @ManyToOne(() => Property, { eager: false })
     @JoinColumn({ name: 'property_id' })
-    property!: Property;
+    property?: Property;
 
     @ManyToOne(() => Client, { eager: false })
     @JoinColumn({ name: 'client_id' })
-    client!: Client;
+    client?: Client;
 
     @ManyToOne(() => User, { eager: false })
     @JoinColumn({ name: 'created_by_user_id' })

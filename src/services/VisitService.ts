@@ -4,7 +4,25 @@ import Visit from '../entities/Visit';
 class VisitService {
     async list() {
         const visits = await VisitRepository.findAll();
-        return visits.map(visit => this.format(visit));
+        const visitsWithClientAndProperty = await Promise.all(
+            visits.map(async (visit) => {
+                let clientObj = visit.client;
+                let propertyObj = visit.property;
+                if (!clientObj && visit.clientId) {
+                    const { default: ClientRepository } = await import('../repositories/ClientRepository');
+                    const foundClient = await ClientRepository.findById(visit.clientId);
+                    clientObj = foundClient === null ? undefined : foundClient;
+                }
+                if (!propertyObj && visit.propertyId) {
+                    const { default: PropertyRepository } = await import('../repositories/PropertyRepository');
+                    const foundProperty = await PropertyRepository.findById(visit.propertyId);
+                    propertyObj = foundProperty === null ? undefined : foundProperty;
+                }
+                const { client, property, ...rest } = visit;
+                return { ...rest, client: clientObj, property: propertyObj } as Visit & { client?: any; property?: any };
+            })
+        );
+        return visitsWithClientAndProperty.map(visit => this.format(visit));
     }
 
     async findById(id: number) {
@@ -66,11 +84,13 @@ class VisitService {
         return { message: 'Visita deletada com sucesso' };
     }
 
-    private format(visit: Visit) {
+    private format(visit: Visit & { client?: any; property?: any }) {
         return {
             id: visit.id,
             propertyId: visit.propertyId,
+            property: visit.property ?? undefined,
             clientId: visit.clientId,
+            client: visit.client ?? undefined,
             scheduledAt: visit.scheduledAt,
             status: visit.status,
             notes: visit.notes,
