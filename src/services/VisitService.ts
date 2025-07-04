@@ -4,23 +4,25 @@ import Visit from '../entities/Visit';
 class VisitService {
     async list() {
         const visits = await VisitRepository.findAll();
-        const visitsWithClient = await Promise.all(
+        const visitsWithClientAndProperty = await Promise.all(
             visits.map(async (visit) => {
-                if (!visit.client && visit.clientId) {
+                let clientObj = visit.client;
+                let propertyObj = visit.property;
+                if (!clientObj && visit.clientId) {
                     const { default: ClientRepository } = await import('../repositories/ClientRepository');
-                    const client = await ClientRepository.findById(visit.clientId);
-                    return { ...visit, client };
+                    const foundClient = await ClientRepository.findById(visit.clientId);
+                    clientObj = foundClient === null ? undefined : foundClient;
                 }
-                return visit;
+                if (!propertyObj && visit.propertyId) {
+                    const { default: PropertyRepository } = await import('../repositories/PropertyRepository');
+                    const foundProperty = await PropertyRepository.findById(visit.propertyId);
+                    propertyObj = foundProperty === null ? undefined : foundProperty;
+                }
+                const { client, property, ...rest } = visit;
+                return { ...rest, client: clientObj, property: propertyObj } as Visit & { client?: any; property?: any };
             })
         );
-        return visitsWithClient.map(visit => {
-            if (visit.client === null) {
-                const { client, ...rest } = visit;
-                return this.format(rest as Visit);
-            }
-            return this.format(visit as Visit);
-        });
+        return visitsWithClientAndProperty.map(visit => this.format(visit));
     }
 
     async findById(id: number) {
@@ -82,10 +84,11 @@ class VisitService {
         return { message: 'Visita deletada com sucesso' };
     }
 
-    private format(visit: Visit & { client?: any }) {
+    private format(visit: Visit & { client?: any; property?: any }) {
         return {
             id: visit.id,
             propertyId: visit.propertyId,
+            property: visit.property ?? undefined,
             clientId: visit.clientId,
             client: visit.client ?? undefined,
             scheduledAt: visit.scheduledAt,
