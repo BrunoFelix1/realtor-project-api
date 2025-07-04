@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import RentInvoiceService from '../services/RentInvoiceService';
+import { generateInvoiceDocument } from '../utils/base';
 
 class RentInvoiceController {
     async list(req: Request, res: Response) {
@@ -46,9 +47,37 @@ class RentInvoiceController {
         try {
             const data = req.body;
             const invoice = await RentInvoiceService.create(data);
-            return res.status(201).json(invoice);
+            
+            const fullInvoice = await RentInvoiceService.findById(invoice.id);
+            if (!fullInvoice) {
+                return res.status(500).json({ message: 'Erro ao buscar fatura criada' });
+            }
+
+            const invoiceDocument = generateInvoiceDocument(fullInvoice);
+            
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.setHeader('Content-Disposition', `inline; filename="fatura-${invoice.id}.html"`);
+            return res.status(201).send(invoiceDocument);
         } catch (error: any) {
             return res.status(error.status || 500).json({ message: error.message || 'Erro ao criar fatura' });
+        }
+    }
+
+    async generateDocument(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const invoice = await RentInvoiceService.findById(Number(id));
+            if (!invoice) {
+                return res.status(404).json({ message: 'Fatura não encontrada' });
+            }
+
+            const invoiceDocument = generateInvoiceDocument(invoice);
+            
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.setHeader('Content-Disposition', `inline; filename="fatura-${invoice.id}.html"`);
+            return res.status(200).send(invoiceDocument);
+        } catch (error: any) {
+            return res.status(500).json({ message: 'Erro ao gerar documento da fatura' });
         }
     }
 

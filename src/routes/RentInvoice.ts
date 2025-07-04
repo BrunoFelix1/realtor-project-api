@@ -10,6 +10,8 @@ router.use(authenticateToken);
 router.get('/', RentInvoiceController.list);
 // Buscar fatura por id
 router.get('/:id', RentInvoiceController.findById);
+// Gerar documento da fatura
+router.get('/:id/document', RentInvoiceController.generateDocument);
 // Buscar faturas por aluguel
 router.get('/rental/:rentalId', RentInvoiceController.findByRental);
 // Buscar faturas por mês/ano
